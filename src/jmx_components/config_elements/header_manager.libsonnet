@@ -1,37 +1,40 @@
 function(key, value)
 [
-  "HeaderManager",
-  {
-    "guiclass": "HeaderPanel",
-    "testclass": "HeaderManager",
-    "testname": "HTTP Header Manager",
-    "enabled": "true"
-  },
   [
-    "collectionProp",
+    "HeaderManager",
     {
-      "name": "HeaderManager.headers"
+      "guiclass": "HeaderPanel",
+      "testclass": "HeaderManager",
+      "testname": "HTTP Header Manager",
+      "enabled": "true"
     },
     [
-      "elementProp",
+      "collectionProp",
       {
-        "name": "",
-        "elementType": "Header"
+        "name": "HeaderManager.headers"
       },
       [
-        "stringProp",
+        "elementProp",
         {
-          "name": "Header.name"
+          "name": "",
+          "elementType": "Header"
         },
-        key
-      ],
-      [
-        "stringProp",
-        {
-          "name": "Header.value"
-        },
-        value
+        [
+          "stringProp",
+          {
+            "name": "Header.name"
+          },
+          key
+        ],
+        [
+          "stringProp",
+          {
+            "name": "Header.value"
+          },
+          value
+        ],
       ],
     ],
   ],
+  [ "hashTree" ],
 ]

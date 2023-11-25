@@ -2,13 +2,15 @@
 
 # Preparation
 # TODO change to input file
-#cp ./example/example.postman_collection.json workdir/postman_collection.json
-cp ./example/URI-Getter.postman_collection.json workdir/postman_collection.json
+cp ./example/example.postman_collection.json workdir/postman_collection.json
+#cp ./example/URI-Getter.postman_collection.json workdir/postman_collection.json
 cp ./example/example_dev.postman_environment.json workdir/postman_environment.json
 
 # Replace postman variable syntax with jmeter variable syntax
 sed -i 's/{{\(.\+\)}}/${\1}/g' ./workdir/postman_collection.json
-
+sed -i 's/\\r//g' ./workdir/postman_collection.json
+sed -i 's/\\n//g' ./workdir/postman_collection.json
+sed -i 's/\\t//g' ./workdir/postman_collection.json
 
 # Execution
 string_result=$(jsonnet create_jmx.jsonnet)

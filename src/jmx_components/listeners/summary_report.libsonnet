@@ -1,6 +1,5 @@
 function()
 [
-  [ "hashTree" ],
   [
     "ResultCollector",
     {
@@ -139,5 +138,6 @@ function()
         "name": "filename"
       }
     ],
-  ]
+  ],
+  [ "hashTree" ],
 ]

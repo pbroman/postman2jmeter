@@ -1,70 +1,73 @@
 function(base_url, username, password)
 [
-  "AuthManager",
-  {
-    "guiclass": "AuthPanel",
-    "testclass": "AuthManager",
-    "testname": "HTTP Authorization Manager",
-    "enabled": "true"
-  },
   [
-    "collectionProp",
+    "AuthManager",
     {
-      "name": "AuthManager.auth_list"
+      "guiclass": "AuthPanel",
+      "testclass": "AuthManager",
+      "testname": "HTTP Authorization Manager",
+      "enabled": "true"
     },
     [
-      "elementProp",
+      "collectionProp",
       {
-        "name": "",
-        "elementType": "Authorization"
+        "name": "AuthManager.auth_list"
       },
       [
-        "stringProp",
+        "elementProp",
         {
-          "name": "Authorization.url"
+          "name": "",
+          "elementType": "Authorization"
         },
-        base_url
-      ],
-      [
-        "stringProp",
-        {
-          "name": "Authorization.username"
-        },
-        username
-      ],
-      [
-        "stringProp",
-        {
-          "name": "Authorization.password"
-        },
-        password
-      ],
-      [
-        "stringProp",
-        {
-          "name": "Authorization.domain"
-        }
-      ],
-      [
-        "stringProp",
-        {
-          "name": "Authorization.realm"
-        }
+        [
+          "stringProp",
+          {
+            "name": "Authorization.url"
+          },
+          base_url
+        ],
+        [
+          "stringProp",
+          {
+            "name": "Authorization.username"
+          },
+          username
+        ],
+        [
+          "stringProp",
+          {
+            "name": "Authorization.password"
+          },
+          password
+        ],
+        [
+          "stringProp",
+          {
+            "name": "Authorization.domain"
+          }
+        ],
+        [
+          "stringProp",
+          {
+            "name": "Authorization.realm"
+          }
+        ],
       ],
     ],
+    [
+      "boolProp",
+      {
+        "name": "AuthManager.controlledByThreadGroup"
+      },
+      "false"
+    ],
+    [
+      "boolProp",
+      {
+        "name": "AuthManager.clearEachIteration"
+      },
+      "true"
+    ],
   ],
-  [
-    "boolProp",
-    {
-      "name": "AuthManager.controlledByThreadGroup"
-    },
-    "false"
-  ],
-  [
-    "boolProp",
-    {
-      "name": "AuthManager.clearEachIteration"
-    },
-    "true"
-  ],
+  [ "hashTree", ],
 ]

@@ -1,6 +1,5 @@
 function()
 [
-  [ "hashTree" ],
   [
     "CookieManager",
     {
@@ -29,5 +28,6 @@ function()
       },
       "false"
     ],
-  ]
+  ],
+  [ "hashTree" ],
 ]
