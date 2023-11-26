@@ -1,7 +1,11 @@
 local body_raw = import 'fragments/body_raw.libsonnet';
 local request_param = import 'fragments/request_param.libsonnet';
+local create_headers = import 'helpers/create_headers.libsonnet';
+local header_manager = import '../config_elements/header_manager.libsonnet';
+local basic_auth_manager = import '../config_elements/basic_auth_manager.libsonnet';
 
-function(name, request)
+function(name, request, parent_auth_config)
+local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then { auth: request.auth } else {});
 [
   [
     "HTTPSamplerProxy",
@@ -12,7 +16,13 @@ function(name, request)
       "enabled": "true"
     },
 
-    [ "boolProp", { "name": "HTTPSampler.postBodyRaw" }, std.toString(std.objectHas(request, 'body')) ],
+    [
+      "boolProp",
+      {
+        "name": "HTTPSampler.postBodyRaw"
+      },
+      std.toString( std.objectHas(request, 'body') && request.body.mode == 'raw' )
+    ],
     [
       "elementProp",
       {
@@ -99,7 +109,7 @@ function(name, request)
       {
         "name": "HTTPSampler.DO_MULTIPART_POST"
       },
-      std.toString( std.objectHas(request, 'body') && std.objectHas(request.body, 'urlencoded') )
+      std.toString( std.objectHas(request, 'body') && request.body.mode == 'urlencoded' )
     ],
     [
       "stringProp",
@@ -121,4 +131,8 @@ function(name, request)
     ],
   ],
   [ "hashTree", ]
+  + create_headers(request)
+  + if auth_config.auth.type == 'basic'
+          then basic_auth_manager(request.url.host[0], auth_config.auth.basic)
+          else []
 ]

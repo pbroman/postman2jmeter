@@ -1,4 +1,6 @@
-function(key, value)
+local header = import 'fragments/header.libsonnet';
+
+function(headers)
 [
   [
     "HeaderManager",
@@ -13,28 +15,8 @@ function(key, value)
       {
         "name": "HeaderManager.headers"
       },
-      [
-        "elementProp",
-        {
-          "name": "",
-          "elementType": "Header"
-        },
-        [
-          "stringProp",
-          {
-            "name": "Header.name"
-          },
-          key
-        ],
-        [
-          "stringProp",
-          {
-            "name": "Header.value"
-          },
-          value
-        ],
-      ],
-    ],
+    ]
+    + [header(h.key, h.value) for h in headers],
   ],
   [ "hashTree" ],
 ]

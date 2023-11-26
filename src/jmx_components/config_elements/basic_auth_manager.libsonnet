@@ -1,4 +1,8 @@
-function(base_url, username, password)
+local get_value_by_key(array, key) = std.filter((function(x) x.key == key), array)[0].value;
+
+function(base_url, auth_array)
+local username = get_value_by_key(auth_array, 'username');
+local password = get_value_by_key(auth_array, 'password');
 [
   [
     "AuthManager",

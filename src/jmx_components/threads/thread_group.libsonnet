@@ -1,7 +1,8 @@
 local simple_controller = import '../logic_controller/simple_controller.libsonnet';
 local http_sampler_proxy = import '../sampler/http_sampler_proxy.libsonnet';
+local constant_timer = import '../timer/constant_timer.libsonnet';
 
-function(items)
+function(items, auth_config)
 [
   [
     "ThreadGroup",
@@ -85,5 +86,6 @@ function(items)
     ],
   ],
   [ "hashTree", ]
-  + std.flattenArrays([ if std.objectHas(item, 'item') then simple_controller(item) else http_sampler_proxy(item.name, item.request) for item in items ])
+  + constant_timer('Global Constant Timer', 'global_timer', '100', 'Timer affecting all HTTP Requests, can be set using the property global_timer')
+  + std.flattenArrays([ if std.objectHas(item, 'item') then simple_controller(item, auth_config) else http_sampler_proxy(item.name, item.request, auth_config) for item in items ])
 ]
