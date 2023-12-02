@@ -87,5 +87,5 @@ function(items, auth_config)
   ],
   [ "hashTree", ]
   + constant_timer('Global Constant Timer', 'global_timer', '100', 'Timer affecting all HTTP Requests, can be set using the property global_timer')
-  + std.flattenArrays([ if std.objectHas(item, 'item') then simple_controller(item, auth_config) else http_sampler_proxy(item.name, item.request, auth_config) for item in items ])
+  + std.flattenArrays([ if std.objectHas(item, 'item') then simple_controller(item, auth_config) else http_sampler_proxy(item, auth_config) for item in items ])
 ]

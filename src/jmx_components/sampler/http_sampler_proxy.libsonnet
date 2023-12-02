@@ -1,18 +1,23 @@
 local body_raw = import 'fragments/body_raw.libsonnet';
 local request_param = import 'fragments/request_param.libsonnet';
 local create_headers = import 'helpers/create_headers.libsonnet';
-local header_manager = import '../config_elements/header_manager.libsonnet';
 local basic_auth_manager = import '../config_elements/basic_auth_manager.libsonnet';
+local post_processing = import 'helpers/post_processing.libsonnet';
 
-function(name, request, parent_auth_config)
+function(item, parent_auth_config)
+local request = item.request;
 local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then { auth: request.auth } else {});
+
+if std.objectHas(request, 'description') && std.length( std.findSubstr('jmeter_skip', request.description) ) > 0
+then []
+else
 [
   [
     "HTTPSamplerProxy",
     {
       "guiclass": "HttpTestSampleGui",
       "testclass": "HTTPSamplerProxy",
-      "testname": name,
+      "testname": item.name,
       "enabled": "true"
     },
 
@@ -41,21 +46,21 @@ local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then
             else if request.body.mode == 'urlencoded' then [request_param(param.key, param.value) for param in request.body.urlencoded]
             else error 'Error in http sampler: unknown body mode: ' + request.body.mode
           )
-          else if std.objectHas(request.url, 'query') then [request_param(param.key, param.value) for param in request.url.query] else [],
+          // Query params have been replaced by complete url in path
+          //else if std.objectHas(request, 'url') && std.objectHas(request.url, 'query') then [request_param(param.key, param.value) for param in request.url.query] else [],
+          else []
     ],
     [
       "stringProp",
       {
         "name": "HTTPSampler.domain"
       },
-      std.join('', request.url.host)
     ],
     [
       "stringProp",
       {
         "name": "HTTPSampler.port"
       },
-      if std.objectHas(request.url, 'port') then request.url.port else ''
     ],
     [
       "stringProp",
@@ -74,7 +79,9 @@ local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then
       {
         "name": "HTTPSampler.path"
       },
-      '/' + if std.objectHas(request.url, 'path') then std.join('/', request.url.path) else ''
+      if std.objectHas(request, 'url') then
+        std.strReplace(std.strReplace(request.url.raw, '"', '%22'), '&', '&amp;') // FIXME hacky url/xml encoding!
+        else ''
     ],
     [
       "stringProp",
@@ -109,7 +116,7 @@ local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then
       {
         "name": "HTTPSampler.DO_MULTIPART_POST"
       },
-      std.toString( std.objectHas(request, 'body') && request.body.mode == 'urlencoded' )
+      "false"
     ],
     [
       "stringProp",
@@ -132,7 +139,10 @@ local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then
   ],
   [ "hashTree", ]
   + create_headers(request)
-  + if auth_config.auth.type == 'basic'
-          then basic_auth_manager(request.url.host[0], auth_config.auth.basic)
+  + (if auth_config.auth.type == 'basic' && std.objectHas(request, 'url')
+          then basic_auth_manager( request.url, auth_config.auth.basic)
+          else [])
+  + if std.objectHas(item, 'event') && std.objectHas(item.event[0], 'script')
+          then post_processing(item.event[0].script)
           else []
 ]

@@ -17,7 +17,7 @@ function( key, value )
       {
         "name": "Argument.value"
       },
-      value
+      if std.isEmpty(value) then '${__P(' + key + ',"")}' else value
     ],
     [
       "stringProp",

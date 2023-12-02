@@ -85,9 +85,9 @@ local auth_config = { auth: if std.objectHas(_config.collection, 'auth') then _c
           "name": "Arguments.arguments"
         },
       ]
-      + [user_defined_variable(var.key, var.value) for var in _config.env.values]
+      + [user_defined_variable(var.key, if std.objectHas(var, 'value') then var.value else '') for var in _config.env.values]
       + if std.objectHas(_config.collection, 'variable')
-          then [user_defined_variable(var.key, var.value) for var in _config.collection.variable]
+          then [user_defined_variable(var.key, if std.objectHas(var, 'value') then var.value else '') for var in _config.collection.variable]
           else [],
     ],
     [ "hashTree" ],
