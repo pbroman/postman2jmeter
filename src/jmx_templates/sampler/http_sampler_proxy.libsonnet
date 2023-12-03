@@ -4,9 +4,11 @@ local create_headers = import 'helpers/create_headers.libsonnet';
 local basic_auth_manager = import '../config_elements/basic_auth_manager.libsonnet';
 local post_processing = import 'helpers/post_processing.libsonnet';
 
-function(item, parent_auth_config)
+function(item, parent_config)
 local request = item.request;
-local auth_config = parent_auth_config + (if std.objectHas(request, 'auth') then { auth: request.auth } else {});
+local config = parent_config
+  + (if std.objectHas(request, 'auth') then { auth: request.auth } else {})
+  + (if std.objectHas(item, 'protocolProfileBehavior') then { protocolProfileBehavior+: item.protocolProfileBehavior } else {});
 
 if std.objectHas(request, 'description') && std.length( std.findSubstr('jmeter_skip', request.description) ) > 0
 then []
@@ -95,7 +97,7 @@ else
       {
         "name": "HTTPSampler.follow_redirects"
       },
-      "false"
+      std.toString(config.protocolProfileBehavior.followRedirects)
     ],
     [
       "boolProp",
@@ -139,8 +141,8 @@ else
   ],
   [ "hashTree", ]
   + create_headers(request)
-  + (if auth_config.auth.type == 'basic' && std.objectHas(request, 'url')
-          then basic_auth_manager( request.url, auth_config.auth.basic)
+  + (if config.auth.type == 'basic' && std.objectHas(request, 'url')
+          then basic_auth_manager( request.url, config.auth.basic)
           else [])
   + if std.objectHas(item, 'event') && std.objectHas(item.event[0], 'script')
           then post_processing(item.event[0].script)

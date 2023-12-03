@@ -8,7 +8,8 @@ local view_results_tree = import 'listeners/view_results_tree.libsonnet';
 local thread_group = import 'threads/thread_group.libsonnet';
 
 function(_config)
-local auth_config = { auth: if std.objectHas(_config.collection, 'auth') then _config.collection.auth else { type: 'noauth'}};
+local config = _config.default + (if std.objectHas(_config.collection, 'auth') then { auth: _config.collection.auth } else {});
+//local config = parent_config +   (if std.objectHas(item_object, 'auth')        then { auth: item_object.auth } else {});
 [
   [
     "TestPlan",
@@ -93,7 +94,7 @@ local auth_config = { auth: if std.objectHas(_config.collection, 'auth') then _c
     [ "hashTree" ],
   ]
   + cookie_manager()
-  + thread_group(_config.collection.item, auth_config)
+  + thread_group(_config.collection.item, config)
   + summary_report()
   + view_results_tree()
 ]
