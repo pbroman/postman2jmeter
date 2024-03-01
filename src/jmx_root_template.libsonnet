@@ -20,10 +20,5 @@ local view_results_tree = import 'jmx_templates/listeners/view_results_tree.libs
     },
     [ "hashTree" ]
     + test_plan($._config)
-    // + cookie_manager()
-    // + basic_auth_manager
-    // TODO add elements here ... :-)
-    //+ summary_report()
-    //+ view_results_tree()
   ]
 }

@@ -105,6 +105,10 @@ def headers = prev.getResponseHeaders().split('\n').inject([:]) { out, header ->
 If you want requests with response status other than 200s in your jmeter test, you need a ResponseAssertion for jmeter to interpret the result correctly.
 To get this, put a comment `//jmeter_status: <status code regex>` in the postman test javascript code.
 
+### Replacing external sleep calls
+If you are using external calls (to e.g. https://httpstat.us/) to create pauses in your postman tests, you can put a
+`jmeter_sleep:<ms>` in the description of the request. The call are then replaced with a JMeter FlowControlAction with the desired pause. 
+
 ## Cookbook
 This implementation certainly doesn't cover every aspect of postman or jmeter. But if you have additional needs, 
 it is fairly easy to extend the implementation.

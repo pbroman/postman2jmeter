@@ -9,7 +9,6 @@ local thread_group = import 'threads/thread_group.libsonnet';
 
 function(_config)
 local config = _config.default + (if std.objectHas(_config.collection, 'auth') then { auth: _config.collection.auth } else {});
-//local config = parent_config +   (if std.objectHas(item_object, 'auth')        then { auth: item_object.auth } else {});
 [
   [
     "TestPlan",

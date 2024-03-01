@@ -3,6 +3,7 @@ local request_param = import 'fragments/request_param.libsonnet';
 local create_headers = import 'helpers/create_headers.libsonnet';
 local basic_auth_manager = import '../config_elements/basic_auth_manager.libsonnet';
 local post_processing = import 'helpers/post_processing.libsonnet';
+local flow_control_action = import 'flow_control_action.libsonnet';
 
 function(item, parent_config)
 local request = item.request;
@@ -12,6 +13,9 @@ local config = parent_config
 
 if std.objectHas(request, 'description') && std.length( std.findSubstr('jmeter_skip', request.description) ) > 0
 then []
+else
+if std.objectHas(request, 'description') && std.length( std.findSubstr('jmeter_sleep', request.description) ) > 0
+then flow_control_action(std.split(request.description, 'jmeter_sleep:')[1])
 else
 [
   [
